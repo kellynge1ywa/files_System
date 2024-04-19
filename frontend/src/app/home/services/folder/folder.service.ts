@@ -56,5 +56,7 @@ export class FolderService {
     return this.firebaseService.getAll<Folder>('folders');
   }
 
+  updateFolder() {}
+
   deleteFolder(folder: Folder) {}
 }

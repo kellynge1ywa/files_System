@@ -1,0 +1,19 @@
+<div>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="mb-5">
+    <div class="flex gap-4">
+      <div>
+        <mat-form-field>
+          <mat-label>Folder Name</mat-label>
+          <input
+            type="text"
+            matInput
+            placeholder="document"
+            formControlName="folderName"
+          />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <button class="bg-slate-500 w-[95%] rounded-[0.5rem] p-1">Save</button>
+  </form>
+</div>

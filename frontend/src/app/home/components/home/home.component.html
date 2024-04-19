@@ -1,0 +1,145 @@
+<div class="home-container">
+  <div class="nav ml-10 mt-4">
+    <div class="flex items-center ml-6">
+      <img
+        src="../../../assets/image/phile-logo.jpeg"
+        alt=""
+        width="40"
+        class="m-2"
+      />
+      <div>
+        <span>Phile</span>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <nav class="">
+        <ul class="grid ml-7 gap-4">
+          <li>
+            <a routerLink="/">Home</a>
+          </li>
+
+          <li>
+            <a (click)="getUser()" class="cursor-pointer">Starred</a>
+          </li>
+
+          <li>
+            <a class="">Bin</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <div class="main">
+    <div>
+      <div class="m-4 flex items-center justify-between">
+        <div>
+          <input
+            type="text"
+            placeholder="Search"
+            class="p-1 pl-2 rounded-[4rem]"
+          />
+        </div>
+
+        <ng-container *ngIf="currentUser$ | async as user; else login">
+          <div
+            class="cursor-pointer flex gap-2"
+            [mat-menu-trigger-for]="userMenu"
+          >
+            <img
+              class="w-[30px] h-[30px] rounded-[50%] object-cover object-center"
+              [src]="user.photoURL ?? 'assets/image/user.png'"
+              alt=""
+            />
+            <div>{{ user.displayName }}</div>
+
+            <mat-icon class="mb-5">expand_more</mat-icon>
+          </div>
+          <!-- <span>{{ user.email }}</span> -->
+        </ng-container>
+        <!-- <div>
+          <span *ngIf="user$ | async; user">{{ user.email }}</span>
+        </div> -->
+
+        <ng-template #login>
+          <button mat-button routerLink="/auth/login" class="cursor-pointer">
+            <mat-icon>login</mat-icon>
+            Login
+          </button>
+        </ng-template>
+
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item routerLink="/auth/profile">Profile</button>
+          <button mat-menu-item (click)="logout()">Logout</button>
+        </mat-menu>
+      </div>
+
+      <div
+        class="bg-white h-[86vh] ml-[4vh] mr-[15vh] p-[1rem] rounded-[0.9rem]"
+      >
+        <div class="ml-1">
+          <span>Home</span>
+        </div>
+        <div>
+          <div>
+            <span
+              *ngIf="!showForm"
+              (click)="showForm = true"
+              class="cursor-pointer"
+              >Add Folder</span
+            >
+            <span
+              *ngIf="showForm"
+              (click)="showForm = false"
+              class="cursor-pointer"
+              >Close form</span
+            >
+          </div>
+          <div *ngIf="showForm" class="ml-10">
+            <form
+              [formGroup]="addFolderForm"
+              (ngSubmit)="onSubmit()"
+              class="mb-5"
+            >
+              <div class="flex gap-4">
+                <div>
+                  <mat-form-field>
+                    <mat-label>Folder Name</mat-label>
+                    <input
+                      type="text"
+                      matInput
+                      placeholder="document"
+                      formControlName="folderName"
+                      (blur)="folderNameError()"
+                      required
+                    />
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                class="bg-slate-500 w-[22%] rounded-[0.5rem] p-1"
+              >
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-[1rem] mt-6">
+          <div
+            class="border bg-slate-200 p-2 rounded-[0.6rem] cursor-pointer"
+            [routerLink]="'/folders/' + folder.id"
+            *ngFor="let folder of folders"
+          >
+            <span class="text-center cursor-pointer">{{
+              folder.folderName
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,200 @@
+<div class="home-container">
+  <div class="nav ml-10 mt-4">
+    <div class="flex items-center ml-6">
+      <img
+        src="../../../assets/image/phile-logo.jpeg"
+        alt=""
+        width="40"
+        class="m-2"
+      />
+      <div>
+        <span>Phile</span>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <nav class="">
+        <ul class="grid ml-7 gap-4">
+          <li>
+            <a routerLink="/">Home</a>
+          </li>
+
+          <li>
+            <a class="">Starred</a>
+          </li>
+
+          <li>
+            <a class="">Bin</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <div class="main">
+    <div>
+      <div class="m-4 flex items-center justify-between">
+        <div>
+          <input
+            type="text"
+            placeholder="Search"
+            class="p-1 pl-2 rounded-[4rem]"
+          />
+        </div>
+        <ng-container *ngIf="currentUser$ | async as user; else login">
+          <div
+            class="cursor-pointer flex gap-2"
+            [mat-menu-trigger-for]="userMenu"
+          >
+            <img
+              class="w-[30px] h-[30px] rounded-[50%] object-cover object-center"
+              [src]="user.photoURL ?? 'assets/image/user.png'"
+              alt=""
+            />
+            <div>{{ user.displayName }}</div>
+            <mat-icon>expand_more</mat-icon>
+          </div>
+          <!-- <span>{{ user.email }}</span> -->
+        </ng-container>
+
+        <ng-template #login>
+          <button mat-button routerLink="/auth/login" class="cursor-pointer">
+            <mat-icon>login</mat-icon>
+            Login
+          </button>
+        </ng-template>
+
+        <mat-menu #userMenu="matMenu">
+          <button mat-menu-item routerLink="/auth/profile">Profile</button>
+          <button mat-menu-item (click)="logout()">Logout</button>
+        </mat-menu>
+
+        <!-- <div>
+          <span routerLink="/auth/login" class="cursor-pointer">Account</span>
+        </div> -->
+      </div>
+
+      <div
+        class="bg-white h-[86vh] ml-[4vh] mr-[15vh] p-[1rem] rounded-[0.9rem]"
+      >
+        <div *ngIf="folder">
+          <div class="ml-1">
+            <span>{{ folder.folderName }}</span>
+          </div>
+          <div>
+            <div>
+              <span
+                *ngIf="!showForm"
+                (click)="showForm = true"
+                class="cursor-pointer"
+              >
+                Add file
+              </span>
+              <span
+                *ngIf="showForm"
+                (click)="showForm = false"
+                class="cursor-pointer"
+              >
+                Close form
+              </span>
+            </div>
+            <div *ngIf="showForm">
+              <form
+                [formGroup]="addFileForm"
+                (ngSubmit)="onSubmit()"
+                class="mb-5"
+              >
+                <div class="">
+                  <div>
+                    <mat-form-field>
+                      <mat-label>Filename</mat-label>
+                      <input
+                        type="text"
+                        matInput
+                        placeholder="filename"
+                        formControlName="filename"
+                        (blur)="fileNameError()"
+                        required
+                      />
+                    </mat-form-field>
+                  </div>
+
+                  <div>
+                    <mat-form-field>
+                      <mat-label>Filepath</mat-label>
+                      <input
+                        type="text"
+                        matInput
+                        placeholder="filepath"
+                        formControlName="filepath"
+                        (blur)="filePathError()"
+                        required
+                      />
+                    </mat-form-field>
+                  </div>
+                </div>
+
+                <button class="bg-slate-500 w-[95%] rounded-[0.5rem] p-1">
+                  Save
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="flex w-[100%] gap-4">
+          <div
+            class="grid grid-cols-2 gap-[1rem] mt-6"
+            [class.w-[40%]]="showPreview"
+            [class.w-[100%]]="!showPreview"
+          >
+            <div
+              class="border bg-slate-200 p-2 rounded-[0.6rem] cursor-pointer"
+              *ngFor="let file of files"
+              (click)="preview(file)"
+            >
+              <span class="text-center cursor-pointer">{{
+                file.filename
+              }}</span>
+            </div>
+          </div>
+          <div
+            class="border-2 rounded-[2rem]"
+            *ngIf="showPreview && selectedFile"
+            [class.w-[60%]]="showPreview"
+          >
+            <ng-container [ngSwitch]="selectedFile.format">
+              <img
+                *ngSwitchCase="'image'"
+                [src]="selectedFile.filePath"
+                alt="Preview for {{ selectedFile.filename }}"
+              />
+
+              <video *ngSwitchCase="'video'" controls>
+                <source [src]="selectedFile.filePath" type="video/mp4" />
+              </video>
+
+              <audio *ngSwitchCase="'audio'" class="mt-8" controls>
+                <source [src]="selectedFile.filePath" type="audio/mpeg" />
+              </audio>
+              <!-- <div>
+                <iframe
+                  class="w-[95%]"
+                  src="../../../../../assets/document/Fahrenheit-451.pdf"
+                ></iframe>
+              </div> -->
+              <!-- <div *ngSwitchCase="'document'">
+                <iframe class="w-[95%]" [src]="selectedFile.filePath"></iframe>
+              </div> -->
+
+              <div *ngSwitchCase="'document'">
+                <a [href]="selectedFile.filePath" class="mt-6"
+                  >View the {{ selectedFile.filename }}</a
+                >
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

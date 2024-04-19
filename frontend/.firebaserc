@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "files-system-d58ad": {
+      "hosting": {
+        "philes": [
+          "files-system-d58ad"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "files-system-d58ad"
+  }
+}

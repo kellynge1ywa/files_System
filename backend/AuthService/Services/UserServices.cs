@@ -37,16 +37,35 @@ namespace AuthService.Services
         }
 
 
-        public Task<LoginResponseDto> SignInUser(LoginRequestDto loginRequest)
+        public async Task<LoginResponseDto> SignInUser(LoginRequestDto loginRequest)
         {
-            throw new NotImplementedException();
+            var user = await _appDbContext.AppUsers.Where(k => k.UserName!.ToLower() == loginRequest.Email.ToLower()).FirstOrDefaultAsync();
+
+            var isPasswordValid = _userManager.CheckPasswordAsync(user, loginRequest.Password).GetAwaiter().GetResult();
+            if (!isPasswordValid || user == null)
+            {
+                return new LoginResponseDto();
+            }
+
+            var loggedUser = _mapper.Map<AppUserDto>(user);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var token = _ijwt.GenerateToken(user, roles);
+
+            var loggedInUser = new LoginResponseDto()
+            {
+                UserDto = loggedUser,
+                Token = token
+            };
+            return loggedInUser;
         }
 
         public async Task<string> SignUpUser(RegisterUserDto NewUser)
         {
             var newUser = _mapper.Map<AppUser>(NewUser);
             var isFirstUser = !_appDbContext.AppUsers.Any();
-            var result = await _userManager.CreateAsync(newUser);
+            var result = await _userManager.CreateAsync(newUser, NewUser.Password);
 
             if (result.Succeeded)
             {

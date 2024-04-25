@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService", "backend\File
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "backend\AuthService\AuthService.csproj", "{D6A712B6-87A8-4B8D-B202-F4654B34B62D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolderService", "backend\FolderService\FolderService.csproj", "{12A9DB42-509C-4E5E-AF8A-E7A5F0B826BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{D6A712B6-87A8-4B8D-B202-F4654B34B62D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6A712B6-87A8-4B8D-B202-F4654B34B62D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6A712B6-87A8-4B8D-B202-F4654B34B62D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12A9DB42-509C-4E5E-AF8A-E7A5F0B826BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12A9DB42-509C-4E5E-AF8A-E7A5F0B826BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12A9DB42-509C-4E5E-AF8A-E7A5F0B826BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12A9DB42-509C-4E5E-AF8A-E7A5F0B826BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +36,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{8E1217B3-0762-4892-91E3-AFA7696CD4EB} = {4406A4C2-6434-4DC8-9BE4-385B809ACC46}
 		{D6A712B6-87A8-4B8D-B202-F4654B34B62D} = {4406A4C2-6434-4DC8-9BE4-385B809ACC46}
+		{12A9DB42-509C-4E5E-AF8A-E7A5F0B826BE} = {4406A4C2-6434-4DC8-9BE4-385B809ACC46}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4ACAF527-A092-4C22-BFE3-742F9AAF4C73}

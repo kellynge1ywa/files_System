@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "bOByhDaodJQ5LkVhXeiI9CqTURhs920u0ozlmIGEvMKzBmkxugVPZ6lQ+h0Oic7DQaPiQI4M99yHercikUWvzA==",
+  "dgSpecHash": "0t0BBavVVGdkEcjvtkchhZWOLpM/7/bnpbikFolQ7UTXT1+9ksMshzxte82O1RNztpRY0a1TspRWxf90wGkuTg==",
   "success": true,
   "projectFilePath": "D:\\projects\\Fullstack\\philes\\backend\\AuthService\\AuthService.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,7 @@
     "C:\\Users\\KELLY\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
     "C:\\Users\\KELLY\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\KELLY\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
+    "C:\\Users\\KELLY\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\KELLY\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\KELLY\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.4\\microsoft.aspnetcore.authentication.jwtbearer.8.0.4.nupkg.sha512",
     "C:\\Users\\KELLY\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\8.0.4\\microsoft.aspnetcore.cryptography.internal.8.0.4.nupkg.sha512",

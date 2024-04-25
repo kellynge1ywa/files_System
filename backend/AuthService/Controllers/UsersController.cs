@@ -1,5 +1,6 @@
 using AuthService.Models.Dtos;
 using AuthService.Services.Iservices;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthService.Controllers
@@ -60,6 +61,29 @@ namespace AuthService.Controllers
                 _responseDto.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 return StatusCode(500, _responseDto);
             }
+        }
+        [HttpPost("login")]
+        public async Task<ActionResult<ResponseDto>> SignInUser(LoginRequestDto loginRequest)
+        {
+            try
+            {
+                var response = await _userServices.SignInUser(loginRequest);
+                if (response.UserDto != null)
+                {
+                    _responseDto.Result = response;
+                    return Created("", _responseDto);
+                }
+                _responseDto.Error = "Wrong credentials!!";
+                _responseDto.Success = false;
+                return BadRequest(_responseDto);
+
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, _responseDto);
+            }
+
         }
 
     }

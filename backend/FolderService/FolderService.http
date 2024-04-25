@@ -1,0 +1,6 @@
+@FolderService_HostAddress = http://localhost:5094
+
+GET {{FolderService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

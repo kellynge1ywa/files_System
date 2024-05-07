@@ -5,6 +5,7 @@ import {
   redirectUnauthorizedTo,
   redirectLoggedInTo,
 } from '@angular/fire/auth-guard';
+import { authGuard } from './modules/auth/guard/auth.guard';
 
 const redirectToLogIn = () => redirectUnauthorizedTo(['/auth/login']);
 const reDirectToHome = () => redirectLoggedInTo(['/']);
@@ -22,7 +23,7 @@ const routes: Routes = [
     path: 'folders',
     loadChildren: () =>
       import('./modules/files/files.module').then((m) => m.FilesModule),
-    ...canActivate(redirectToLogIn),
+    canActivate: [authGuard],
   },
 
   {

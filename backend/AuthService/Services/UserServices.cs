@@ -25,9 +25,15 @@ namespace AuthService.Services
             _roleManager = roleManager;
         }
 
-        public Task<AppUser> GetUser(Guid Id)
+        public async Task<AppUser> GetOneUser(Guid UserId)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.AppUsers.Where(k => k.Id == UserId.ToString()).FirstOrDefaultAsync();
+        }
+
+
+        public async Task<AppUser> GetUser(Guid Id)
+        {
+            return await _appDbContext.AppUsers.Where(k => k.Id == Id.ToString()).FirstOrDefaultAsync();
         }
 
         public async Task<List<AppUser>> GetUsers()

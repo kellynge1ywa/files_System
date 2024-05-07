@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using AuthService.Models.Dtos;
 using AuthService.Services.Iservices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,8 +40,65 @@ namespace AuthService.Controllers
             }
         }
 
+        [HttpGet("loggedIn")]
+        [Authorize]
+        public async Task<ActionResult<ResponseDto>> GetUser()
+        {
+            try
+            {
+                var userId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
+                if (userId == null)
+                {
+                    _responseDto.Error = "Please log in";
+                    return BadRequest(_responseDto);
+                }
 
-        [HttpPost("Register")]
+                var UserId = Guid.Parse(userId);
+                var loggedUser = await _userServices.GetUser(UserId);
+                if (loggedUser == null)
+                {
+                    _responseDto.Error = "User is not logged in!!";
+                    return BadRequest(_responseDto);
+                }
+                _responseDto.Result = loggedUser;
+                return Ok(_responseDto);
+
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, _responseDto);
+            }
+        }
+
+
+        [HttpGet("single/{UserId}")]
+        public async Task<ActionResult<ResponseDto>> GetOneUser(Guid UserId)
+        {
+            try
+            {
+                var user = await _userServices.GetOneUser(UserId);
+                if (user == null)
+                {
+                    _responseDto.Error = "User not found";
+                    return NotFound(_responseDto);
+                }
+                _responseDto.Result = user;
+                return Ok(_responseDto);
+
+            }
+            catch (Exception ex)
+            {
+                _responseDto.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return StatusCode(500, _responseDto);
+            }
+
+        }
+
+
+
+
+        [HttpPost("register")]
         public async Task<ActionResult<ResponseDto>> RegisterUser(RegisterUserDto registerUser)
         {
             try

@@ -56,21 +56,21 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   ResetPassword() {
-    if (!this.ResetPasswordForm.valid) {
-      return;
-    }
-    const { email } = this.ResetPasswordForm.value as ResetPassword;
-    this.authService
-      .resetPassword(email)
-      .pipe(
-        this.toastr.observe({
-          loading: 'Sending reset password link...',
-          error: 'Sending reset password link failed!!!',
-          success: 'Reset password link sent!!!',
-        })
-      )
-      .subscribe(() => {
-        this.router.navigate(['/auth/verify_email']);
-      });
+    // if (!this.ResetPasswordForm.valid) {
+    //   return;
+    // }
+    // const { email } = this.ResetPasswordForm.value as ResetPassword;
+    // this.authService
+    //   .resetPassword(email)
+    //   .pipe(
+    //     this.toastr.observe({
+    //       loading: 'Sending reset password link...',
+    //       error: 'Sending reset password link failed!!!',
+    //       success: 'Reset password link sent!!!',
+    //     })
+    //   )
+    //   .subscribe(() => {
+    //     this.router.navigate(['/auth/verify_email']);
+    //   });
   }
 }

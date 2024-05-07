@@ -42,7 +42,7 @@
           />
         </div>
 
-        <ng-container *ngIf="currentUser$ | async as user; else login">
+        <ng-container>
           <div
             class="cursor-pointer flex gap-2"
             [mat-menu-trigger-for]="userMenu"
@@ -51,10 +51,10 @@
               class="w-[30px] h-[30px] rounded-[50%] object-cover object-center"
               width="30"
               height="30"
-              [src]="user.photoURL ?? 'assets/image/user.png'"
+              src="assets/image/user.png"
               alt=""
             />
-            <div>{{ user.displayName }}</div>
+            <div>Username</div>
 
             <mat-icon class="mb-5">expand_more</mat-icon>
           </div>
@@ -79,7 +79,6 @@
     </div>
     <div
       class="text-center border-2 rounded-[2rem] w-[45%] flex flex-col items-center"
-      *ngIf="user$ | async as user"
     >
       <h1>User Profile</h1>
       <div class="relative">
@@ -87,7 +86,7 @@
           class="rounded-[100%] object-cover object-center"
           width="120"
           height="120"
-          [src]="user.photoURL ?? 'assets/image/user.png'"
+          src="assets/image/user.png"
           alt=""
         />
         <button
@@ -98,12 +97,7 @@
           <mat-icon>edit</mat-icon>
         </button>
       </div>
-      <input
-        #inputField
-        type="file"
-        hidden
-        (change)="uploadImage($event, user)"
-      />
+      <input #inputField type="file" hidden />
 
       <form [formGroup]="profileForm" (ngSubmit)="SaveProfile()" class="mb-5">
         <div class="flex gap-4">

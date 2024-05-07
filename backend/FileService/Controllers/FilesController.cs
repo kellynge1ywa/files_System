@@ -20,9 +20,64 @@ public class FilesController : ControllerBase
         _folderServices = folderServices;
         _response = new ResponseDto();
     }
-    [HttpPost("{folderId}")]
-    [Authorize]
-    public async Task<ActionResult<ResponseDto>> UploadFile([FromForm] UploadFileDto uploadFile, Guid folderId)
+
+    [HttpGet]
+    public async Task<ActionResult<ResponseDto>> GetAllFiles()
+    {
+        try
+        {
+            var files = await _filesServices.GetAllFiles();
+            if (files == null)
+            {
+                _response.Error = "Files not found";
+                return NotFound(_response);
+            }
+            _response.Result = files;
+            return Ok(_response);
+        }
+        catch (Exception ex)
+        {
+            _response.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            return StatusCode(500, _response);
+        }
+    }
+
+    [HttpGet("user_files")]
+    public async Task<ActionResult<ResponseDto>> GetUserFiles()
+    {
+        try
+        {
+            var userId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                _response.Error = "Please log in";
+                return BadRequest(_response);
+            }
+
+            var UserId = Guid.Parse(userId);
+
+            var files = await _filesServices.GetFiles(UserId);
+            if (files == null)
+            {
+                _response.Error = "Files not found";
+                return NotFound(_response);
+            }
+
+            _response.Result = files;
+            return Ok(_response);
+
+        }
+        catch (Exception ex)
+        {
+            _response.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            return StatusCode(500, _response);
+        }
+
+    }
+
+
+    [HttpPost("upload/{folderId}"), DisableRequestSizeLimit]
+    public async Task<ActionResult<ResponseDto>> FileUpload([FromForm] UploadFileDto fileDto, Guid folderId)
     {
         try
         {
@@ -38,12 +93,79 @@ public class FilesController : ControllerBase
                 _response.Error = "Folder not found!!!";
                 return NotFound(_response);
             }
+            if (fileDto.File == null && fileDto.File.Length == 0)
+            {
+                _response.Error = "Invalid request";
+                return BadRequest(_response);
+            }
+            var folderName = Path.Combine("Resources", "Files");
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+            if (!Directory.Exists(filePath))
+            {
+                Directory.CreateDirectory(filePath);
+            }
+            var fileName = fileDto.File.FileName;
+            var fullPath = Path.Combine(filePath, fileName);
+            var dbPath = Path.Combine(folderName, fileName);
+            Console.WriteLine(fileName);
+            Console.WriteLine(fullPath);
+            Console.WriteLine(dbPath);
+
+            var newFile = new FileDetails()
+            {
+                Id = Guid.NewGuid(),
+                FilePath = dbPath,
+                FolderId = folderId,
+                UserId = Guid.Parse(userId),
+                DateAdded = DateTime.Now
+            };
 
 
 
-            var response = await _filesServices.AddFile(uploadFile.File);
-            _response.Result = response;
-            return Created("", _response);
+            // fileDto=newFile;
+            Console.WriteLine(newFile.Id);
+            Console.WriteLine(newFile.FilePath);
+            Console.WriteLine(newFile.FolderId);
+            Console.WriteLine(newFile.UserId);
+            Console.WriteLine(newFile.DateAdded);
+
+            if (System.IO.File.Exists(fullPath))
+            {
+                _response.Error = "File exists";
+                return BadRequest(_response);
+            }
+
+            using (var stream = new FileStream(fullPath, FileMode.Create))
+            {
+                fileDto.File.CopyTo(stream);
+            }
+            var result = await _filesServices.AddFile(newFile);
+            _response.Result = result;
+
+            return Ok(_response);
+
+        }
+        catch (Exception ex)
+        {
+            _response.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            return StatusCode(500, _response);
+        }
+
+    }
+
+    [HttpGet("{fileId}")]
+    public async Task<ActionResult<ResponseDto>> GetFile(Guid fileId)
+    {
+        try
+        {
+            var file = await _filesServices.GetFile(fileId);
+            if (file != null)
+            {
+                _response.Result = file;
+                return Ok(_response);
+            }
+            _response.Error = "File not found";
+            return NotFound(_response);
 
         }
         catch (Exception ex)

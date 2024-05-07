@@ -19,6 +19,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("myConnections"));
 });
 
+// builder.Services.AddCors(options => options.AddPolicy("MyPolicy", builder =>
+// {
+//     // builder.WithOrigins("http://localhost:4200");
+//     builder.AllowAnyOrigin();
+//     builder.AllowAnyHeader();
+//     builder.AllowAnyMethod();
+// }));
+builder.Services.AddCors(options => options.AddPolicy("MyPolicy", builder =>
+{
+    builder.WithOrigins("http://localhost:4200");
+    // builder.AllowAnyOrigin();
+    builder.AllowAnyMethod();
+    builder.AllowAnyMethod();
+}));
+
 builder.AddSwaggerExtension();
 builder.AddAuth();
 
@@ -36,6 +51,7 @@ app.UseMigrations();
 app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("MyPolicy");
 app.Run();
 
 

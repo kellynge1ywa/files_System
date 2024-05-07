@@ -20,7 +20,7 @@
           </li>
 
           <li>
-            <a (click)="getUser()" class="cursor-pointer">Starred</a>
+            <a class="cursor-pointer">Starred</a>
           </li>
 
           <li>
@@ -42,19 +42,22 @@
           />
         </div>
 
-        <ng-container *ngIf="currentUser$ | async as user; else login">
-          <div
-            class="cursor-pointer flex gap-2"
-            [mat-menu-trigger-for]="userMenu"
-          >
-            <img
-              class="w-[30px] h-[30px] rounded-[50%] object-cover object-center"
-              [src]="user.photoURL ?? 'assets/image/user.png'"
-              alt=""
-            />
-            <div>{{ user.displayName }}</div>
+        <ng-container>
+          <div *ngIf="auth.currentUserSignal() === null">
+            <div class="cursor-pointer flex gap-2">
+              <img
+                class="w-[30px] h-[30px] rounded-[50%] object-cover object-center"
+                src="assets/image/user.png"
+                alt=""
+              />
+              <div>Username</div>
 
-            <mat-icon class="mb-5">expand_more</mat-icon>
+              <mat-icon class="mb-5">expand_more</mat-icon>
+            </div>
+          </div>
+
+          <div *ngIf="auth.currentUserSignal()">
+            <span>Logout</span>
           </div>
           <!-- <span>{{ user.email }}</span> -->
         </ng-container>
@@ -62,14 +65,14 @@
           <span *ngIf="user$ | async; user">{{ user.email }}</span>
         </div> -->
 
-        <ng-template #login>
+        <ng-template *ngIf="!auth.currentUserSignal()">
           <button mat-button routerLink="/auth/login" class="cursor-pointer">
             <mat-icon>login</mat-icon>
             Login
           </button>
         </ng-template>
 
-        <mat-menu #userMenu="matMenu">
+        <mat-menu *ngIf="auth.currentUserSignal()">
           <button mat-menu-item routerLink="/auth/profile">Profile</button>
           <button mat-menu-item (click)="logout()">Logout</button>
         </mat-menu>

@@ -23,11 +23,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AuthInterceptor } from './modules/auth/interceptor/interceptor.interceptor';
 
 @NgModule({
   declarations: [AppComponent],
@@ -50,15 +51,12 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
     FilesModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AngularFirestoreModule,
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideDatabase(() => getDatabase()),
-    provideStorage(() => getStorage()),
     ToastrModule.forRoot(),
   ],
-  providers: [provideAnimationsAsync()],
+  providers: [
+    provideAnimationsAsync(),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

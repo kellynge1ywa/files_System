@@ -1,12 +1,14 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FolderService;
 [Route("api/[controller]")]
 [ApiController]
+// [EnableCors("MyPolicy")]
 
 public class FoldersController : ControllerBase
 {

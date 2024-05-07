@@ -17,6 +17,8 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { ToastrModule } from 'ngx-toastr';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, NativeDateAdapter } from '@angular/material/core';
 
 @NgModule({
   declarations: [],
@@ -32,6 +34,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
     MatInputModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatDatepickerModule,
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
@@ -39,5 +42,6 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
     provideStorage(() => getStorage()),
     ToastrModule.forRoot(),
   ],
+  providers: [{ provide: DateAdapter, useClass: NativeDateAdapter }],
 })
 export class AuthModule {}

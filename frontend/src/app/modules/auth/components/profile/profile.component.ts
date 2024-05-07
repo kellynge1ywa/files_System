@@ -51,15 +51,15 @@ export class ProfileComponent implements OnInit {
     private toastr: HotToastService,
     private router: Router
   ) {}
-  currentUser$ = this.userService.currentUserProfile$;
-  user$ = this.userService.currentUserProfile$;
+  // currentUser$ = this.userService.currentUserProfile$;
+  // user$ = this.userService.currentUserProfile$;
 
   ngOnInit(): void {
-    this.userService.currentUserProfile$
-      .pipe(untilDestroyed(this))
-      .subscribe((user) => {
-        this.profileForm.patchValue({ ...user });
-      });
+    // this.userService.currentUserProfile$
+    //   .pipe(untilDestroyed(this))
+    //   .subscribe((user) => {
+    //     this.profileForm.patchValue({ ...user });
+    //   });
   }
 
   uploadImage(event: any, user: ProfileUser) {
@@ -94,17 +94,17 @@ export class ProfileComponent implements OnInit {
   }
 
   logout() {
-    this.authService
-      .logout()
-      .pipe(
-        this.toastr.observe({
-          success: 'Logout successfully!!!, Goodbye ',
-          error: 'Logout failed!!!',
-          loading: 'Loading',
-        })
-      )
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      });
+    // this.authService
+    //   .logout()
+    //   .pipe(
+    //     this.toastr.observe({
+    //       success: 'Logout successfully!!!, Goodbye ',
+    //       error: 'Logout failed!!!',
+    //       loading: 'Loading',
+    //     })
+    //   )
+    //   .subscribe(() => {
+    //     this.router.navigate(['/']);
+    //   });
   }
 }

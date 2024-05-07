@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 
 import { Router, RouterModule } from '@angular/router';
 import { NavbarComponent } from '../../../modules/public/components/navbar/navbar.component';
@@ -24,6 +24,8 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { MatMenuModule } from '@angular/material/menu';
 import { UsersService } from '../../../modules/auth/services/user/users.service';
 import { auth } from '../../../../firebase.config';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { UserResponseDto } from '../../../modules/auth/interface/user';
 
 export interface Tile {
   color: string;
@@ -57,6 +59,7 @@ export class HomeComponent implements OnInit {
   value = 'Clear me';
 
   folders: Folder[] = [];
+  folder!: Folder;
 
   showForm: boolean = false;
 
@@ -65,6 +68,8 @@ export class HomeComponent implements OnInit {
   errorMessage = '';
 
   loggedInUserId?: string;
+  auth = inject(AuthService);
+  http = inject(HttpClient);
 
   addFolderForm = new FormGroup({
     folderName: new FormControl('', [Validators.required]),
@@ -77,15 +82,18 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private toastr: HotToastService
   ) {}
-  currentUser$ = this.userService.currentUserProfile$;
+  // currentUser$ = this.userService.currentUserProfile$;
 
-  user$ = this.authService.loggedinUser$.subscribe((dt) => {
-    const userId = dt?.uid;
-    console.log(dt?.uid);
-    this.loggedInUserId = userId;
-  });
+  // user$ = this.authService.loggedinUser$.subscribe((dt) => {
+  //   const userId = dt?.uid;
+  //   console.log(dt?.uid);
+  //   this.loggedInUserId = userId;
+  // });
 
   ngOnInit(): void {
+    this.addFolderForm = new FormGroup({
+      folderName: new FormControl('', Validators.required),
+    });
     this.getFolders();
 
     //logged in user
@@ -104,44 +112,63 @@ export class HomeComponent implements OnInit {
   }
 
   getFolders() {
-    this.folderService.getAllFolders().subscribe((folders) => {
+    this.folderService.getFolders().subscribe((folders) => {
       this.folders = folders;
+      console.log(folders);
     });
   }
 
-  getUser() {
-    this.authService.getCurrentUser();
-  }
-
+  // getUser() {
+  //   this.authService.getCurrentUser();
+  // }
   onSubmit() {
-    const newFolder = this.addFolderForm.value as Folder;
-    const { folderName } = this.addFolderForm.value;
+    const formData = this.addFolderForm.value as Folder;
     if (this.addFolderForm.valid) {
-      newFolder.id = folderName?.toLowerCase();
-      newFolder.userId = this.loggedInUserId;
-      this.folderService.addFolder(newFolder).then(() => {
-        // newFolder.userId = ;
-        this.toastr.observe({
-          loading: 'Adding new folder..',
-          success: 'Folder added successfully',
+      this.folderService
+        .addFolder(formData)
+        .pipe(
+          this.toastr.observe({
+            success: 'Folder added successful!!!',
+            error: 'Folder add failed, try again',
+            loading: 'Loading!!!',
+            // error:((message))=>`${message}`
+          })
+        )
+        .subscribe((response) => {
+          console.log(response);
         });
-        this.showForm = false;
-      });
     }
   }
 
+  // onSubmit() {
+  //   const newFolder = this.addFolderForm.value as Folder;
+  //   const { folderName } = this.addFolderForm.value;
+  //   if (this.addFolderForm.valid) {
+  //     newFolder.id = folderName?.toLowerCase();
+  //     newFolder.userId = this.loggedInUserId;
+  //     this.folderService.addFolder(newFolder).then(() => {
+  //       // newFolder.userId = ;
+  //       this.toastr.observe({
+  //         loading: 'Adding new folder..',
+  //         success: 'Folder added successfully',
+  //       });
+  //       this.showForm = false;
+  //     });
+  //   }
+  // }
+
   logout() {
-    this.authService
-      .logout()
-      .pipe(
-        this.toastr.observe({
-          success: 'Logout successfully!!!, Goodbye ',
-          error: 'Logout failed!!!',
-          loading: 'Loading',
-        })
-      )
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      });
+    // this.authService
+    //   .logout()
+    //   .pipe(
+    //     this.toastr.observe({
+    //       success: 'Logout successfully!!!, Goodbye ',
+    //       error: 'Logout failed!!!',
+    //       loading: 'Loading',
+    //     })
+    //   )
+    //   .subscribe(() => {
+    //     this.router.navigate(['/']);
+    //   });
   }
 }

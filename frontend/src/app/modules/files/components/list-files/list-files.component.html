@@ -41,30 +41,27 @@
             class="p-1 pl-2 rounded-[4rem]"
           />
         </div>
-        <ng-container *ngIf="currentUser$ | async as user; else login">
-          <div
-            class="cursor-pointer flex gap-2"
-            [mat-menu-trigger-for]="userMenu"
-          >
+        <ng-container>
+          <div class="cursor-pointer flex gap-2">
             <img
               class="w-[30px] h-[30px] rounded-[50%] object-cover object-center"
-              [src]="user.photoURL ?? 'assets/image/user.png'"
+              src="assets/image/user.png"
               alt=""
             />
-            <div>{{ user.displayName }}</div>
+            <div>Username</div>
             <mat-icon>expand_more</mat-icon>
           </div>
           <!-- <span>{{ user.email }}</span> -->
         </ng-container>
 
-        <ng-template #login>
+        <ng-template>
           <button mat-button routerLink="/auth/login" class="cursor-pointer">
             <mat-icon>login</mat-icon>
             Login
           </button>
         </ng-template>
 
-        <mat-menu #userMenu="matMenu">
+        <mat-menu>
           <button mat-menu-item routerLink="/auth/profile">Profile</button>
           <button mat-menu-item (click)="logout()">Logout</button>
         </mat-menu>
@@ -79,7 +76,7 @@
       >
         <div *ngIf="folder">
           <div class="ml-1">
-            <span>{{ folder.folderName }}</span>
+            <span>Folder Name</span>
           </div>
           <div>
             <div>
@@ -149,12 +146,8 @@
           >
             <div
               class="border bg-slate-200 p-2 rounded-[0.6rem] cursor-pointer"
-              *ngFor="let file of files"
-              (click)="preview(file)"
             >
-              <span class="text-center cursor-pointer">{{
-                file.filename
-              }}</span>
+              <span class="text-center cursor-pointer"> Filename </span>
             </div>
           </div>
           <div
@@ -188,7 +181,7 @@
 
               <div *ngSwitchCase="'document'">
                 <a [href]="selectedFile.filePath" class="mt-6"
-                  >View the {{ selectedFile.filename }}</a
+                  >View the Filename</a
                 >
               </div>
             </ng-container>

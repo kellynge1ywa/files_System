@@ -14,17 +14,17 @@ import { AuthService } from '../auth/auth.service';
   providedIn: 'root',
 })
 export class UsersService {
-  get currentUserProfile$(): Observable<ProfileUser | null> {
-    return this.authService.loggedinUser$.pipe(
-      switchMap((user) => {
-        if (!user?.uid) {
-          return of(null);
-        }
-        const ref = doc(this.firestore, 'users', user.uid);
-        return docData(ref) as Observable<ProfileUser>;
-      })
-    );
-  }
+  // get currentUserProfile$(): Observable<ProfileUser | null> {
+  //   return this.authService.loggedinUser$.pipe(
+  //     switchMap((user) => {
+  //       if (!user?.uid) {
+  //         return of(null);
+  //       }
+  //       const ref = doc(this.firestore, 'users', user.uid);
+  //       return docData(ref) as Observable<ProfileUser>;
+  //     })
+  //   );
+  // }
 
   constructor(private firestore: Firestore, private authService: AuthService) {}
 

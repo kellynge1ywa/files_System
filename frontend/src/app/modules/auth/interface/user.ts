@@ -16,6 +16,7 @@ export interface ProfileUser {
 }
 
 export interface NewUser {
+  fullname: string;
   email: string;
   password: string;
 }
@@ -27,4 +28,24 @@ export interface LoginCredentials {
 
 export interface ResetPassword {
   email: string;
+}
+
+export interface RegisterUser {
+  fullname: string;
+  email: string;
+  password: string;
+  residence: string;
+  mobileNumber: string;
+  dOB: string;
+  role: string;
+}
+export interface ResponseDto {
+  error: string;
+  result: AppUser;
+  success: boolean;
+}
+
+export interface UserResponseDto {
+  token: string;
+  userDto: AppUser;
 }

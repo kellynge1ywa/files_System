@@ -76,12 +76,12 @@ export class ListFilesComponent implements OnInit {
     private router: Router,
     private toastr: HotToastService
   ) {}
-  user$ = this.authService.loggedinUser$.subscribe((dt) => {
-    const userId = dt?.uid;
-    console.log(dt?.uid);
-    this.loggedInUserId = userId;
-  });
-  currentUser$ = this.userService.currentUserProfile$;
+  // user$ = this.authService.loggedinUser$.subscribe((dt) => {
+  //   const userId = dt?.uid;
+  //   console.log(dt?.uid);
+  //   this.loggedInUserId = userId;
+  // });
+  // currentUser$ = this.userService.currentUserProfile$;
 
   ngOnInit(): void {
     const folderId = this.route.snapshot.paramMap.get('id') as string;
@@ -146,17 +146,17 @@ export class ListFilesComponent implements OnInit {
   }
 
   logout() {
-    this.authService
-      .logout()
-      .pipe(
-        this.toastr.observe({
-          success: 'Logout successfully!!!, Goodbye ',
-          error: 'Logout failed!!!',
-          loading: 'Loading',
-        })
-      )
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      });
+    // this.authService
+    //   .logout()
+    //   .pipe(
+    //     this.toastr.observe({
+    //       success: 'Logout successfully!!!, Goodbye ',
+    //       error: 'Logout failed!!!',
+    //       loading: 'Loading',
+    //     })
+    //   )
+    //   .subscribe(() => {
+    //     this.router.navigate(['/']);
+    //   });
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -20,6 +20,8 @@ import { AuthService } from '../../services/auth/auth.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { UsersService } from '../../services/user/users.service';
 import { switchMap } from 'rxjs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 export function passwordMatchValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -38,6 +40,7 @@ export function passwordMatchValidator(): ValidatorFn {
 @Component({
   selector: 'app-signup',
   standalone: true,
+  providers: [provideNativeDateAdapter()],
   imports: [
     CommonModule,
     RouterModule,
@@ -46,6 +49,7 @@ export function passwordMatchValidator(): ValidatorFn {
     MatInputModule,
     MatCardModule,
     MatFormFieldModule,
+    MatDatepickerModule,
   ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css',
@@ -53,6 +57,7 @@ export function passwordMatchValidator(): ValidatorFn {
 export class SignupComponent implements OnInit {
   signupForm!: FormGroup;
   newuser!: NewUser;
+  auth = inject(AuthService);
 
   hide = true;
   show = true;
@@ -77,6 +82,9 @@ export class SignupComponent implements OnInit {
       {
         fullname: new FormControl('', Validators.required),
         email: new FormControl('', [Validators.email, Validators.required]),
+        residence: new FormControl('', Validators.required),
+        mobileNumber: new FormControl('', Validators.required),
+        dob: new FormControl('', Validators.required),
         password: new FormControl('', [
           Validators.required,
           Validators.pattern(StrongPassword),
@@ -120,31 +128,50 @@ export class SignupComponent implements OnInit {
       this.errorMessage = '';
     }
   }
-  onRegister() {
-    if (!this.signupForm.valid) {
-      return;
-    }
 
-    const { fullname, email, password } = this.signupForm.value;
-    this.authService
-      .signUp(email, password)
-      .pipe(
-        switchMap(({ user: { uid } }) =>
-          this.userService.addUser({ uid, email, displayName: fullname })
-        ),
-        // switchMap(() => this.authService.sendVerificationEmail({ email })),
-        this.toastr.observe({
-          success:
-            'Registration successful,Check email for verification link, Welcome!!!',
-          error: 'Registration failed, try again',
-          loading: 'Loading!!!',
-          // error:((message))=>`${message}`
-        })
-      )
-      .subscribe(() => {
-        this.router.navigate(['/']);
-      });
+  onRegister() {
+    if (this.signupForm.valid) {
+      console.log(this.signupForm.value);
+      this.authService
+        .register(this.signupForm.value)
+        .pipe(
+          this.toastr.observe({
+            success: 'Registration successful, Welcome!!!',
+            error: 'Registration failed, try again',
+            loading: 'Loading!!!',
+            // error:((message))=>`${message}`
+          })
+        )
+        .subscribe(() => {
+          this.router.navigate(['/auth/login']);
+        });
+    }
   }
+  // onRegister() {
+  //   if (!this.signupForm.valid) {
+  //     return;
+  //   }
+
+  //   const { fullname, email, password } = this.signupForm.value;
+  //   this.authService
+  //     .signUp(email, password)
+  //     .pipe(
+  //       switchMap(({ user: { uid } }) =>
+  //         this.userService.addUser({ uid, email, displayName: fullname })
+  //       ),
+  //       // switchMap(() => this.authService.sendVerificationEmail({ email })),
+  //       this.toastr.observe({
+  //         success:
+  //           'Registration successful,Check email for verification link, Welcome!!!',
+  //         error: 'Registration failed, try again',
+  //         loading: 'Loading!!!',
+  //         // error:((message))=>`${message}`
+  //       })
+  //     )
+  //     .subscribe(() => {
+  //       this.router.navigate(['/']);
+  //     });
+  // }
 
   // onRegister() {
   //   if (this.signupForm.valid) {

@@ -8,6 +8,7 @@ namespace AuthService.Services.Iservices
         Task<string> SignUpUser(RegisterUserDto NewUser);
 
         Task<List<AppUser>> GetUsers();
+        Task<AppUser> GetOneUser(Guid UserId);
         Task<AppUser> GetUser(Guid Id);
         Task<LoginResponseDto> SignInUser(LoginRequestDto loginRequest);
     }

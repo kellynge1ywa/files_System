@@ -23,7 +23,7 @@ import { AuthService } from '../../../modules/auth/services/auth/auth.service';
 import { HotToastService } from '@ngneat/hot-toast';
 import { MatMenuModule } from '@angular/material/menu';
 import { UsersService } from '../../../modules/auth/services/user/users.service';
-import { auth } from '../../../../firebase.config';
+// import { auth } from '../../../../firebase.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserResponseDto } from '../../../modules/auth/interface/user';
 
@@ -63,6 +63,8 @@ export class HomeComponent implements OnInit {
 
   showForm: boolean = false;
 
+  isLoggedIn!: boolean;
+
   folderName = new FormControl('', [Validators.required]);
 
   errorMessage = '';
@@ -70,6 +72,8 @@ export class HomeComponent implements OnInit {
   loggedInUserId?: string;
   auth = inject(AuthService);
   http = inject(HttpClient);
+
+  baseUrl = 'https://localhost:7282/api/Users/single';
 
   addFolderForm = new FormGroup({
     folderName: new FormControl('', [Validators.required]),
@@ -82,7 +86,7 @@ export class HomeComponent implements OnInit {
     private router: Router,
     private toastr: HotToastService
   ) {}
-  // currentUser$ = this.userService.currentUserProfile$;
+  currentUser$ = this.authService.isLoggedIn$;
 
   // user$ = this.authService.loggedinUser$.subscribe((dt) => {
   //   const userId = dt?.uid;
@@ -95,6 +99,15 @@ export class HomeComponent implements OnInit {
       folderName: new FormControl('', Validators.required),
     });
     this.getFolders();
+
+    // this.http.get(`${this.baseUrl}`).subscribe((response) => {
+    //   console.log(response);
+    // });
+
+    this.authService.isLoggedIn().subscribe((loggedIn) => {
+      this.isLoggedIn = loggedIn;
+      console.log(this.isLoggedIn);
+    });
 
     //logged in user
     // this.auth.authState.subscribe((user) => {
@@ -112,9 +125,9 @@ export class HomeComponent implements OnInit {
   }
 
   getFolders() {
-    this.folderService.getFolders().subscribe((folders) => {
-      this.folders = folders;
-      console.log(folders);
+    this.folderService.getFolders().subscribe((Folders) => {
+      this.folders = Folders;
+      console.log(this.folders);
     });
   }
 
@@ -140,6 +153,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  logout() {
+    this.authService.logout();
+  }
+
   // onSubmit() {
   //   const newFolder = this.addFolderForm.value as Folder;
   //   const { folderName } = this.addFolderForm.value;
@@ -157,18 +174,16 @@ export class HomeComponent implements OnInit {
   //   }
   // }
 
-  logout() {
-    // this.authService
-    //   .logout()
-    //   .pipe(
-    //     this.toastr.observe({
-    //       success: 'Logout successfully!!!, Goodbye ',
-    //       error: 'Logout failed!!!',
-    //       loading: 'Loading',
-    //     })
-    //   )
-    //   .subscribe(() => {
-    //     this.router.navigate(['/']);
-    //   });
-  }
+  // this.authService
+  //   .logout()
+  //   .pipe(
+  //     this.toastr.observe({
+  //       success: 'Logout successfully!!!, Goodbye ',
+  //       error: 'Logout failed!!!',
+  //       loading: 'Loading',
+  //     })
+  //   )
+  //   .subscribe(() => {
+  //     this.router.navigate(['/']);
+  //   });
 }

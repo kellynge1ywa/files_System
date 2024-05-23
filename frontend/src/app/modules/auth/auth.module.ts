@@ -8,17 +8,15 @@ import { MatCardModule } from '@angular/material/card';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { firebaseConfig } from '../../../firebase.config';
-import { getAuth, provideAuth } from '@angular/fire/auth';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getDatabase, provideDatabase } from '@angular/fire/database';
-import { getStorage, provideStorage } from '@angular/fire/storage';
+
 import { ToastrModule } from 'ngx-toastr';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DateAdapter, NativeDateAdapter } from '@angular/material/core';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptor/interceptor.interceptor';
+import { AuthService } from './services/auth/auth.service';
 
 @NgModule({
   declarations: [],
@@ -35,13 +33,13 @@ import { DateAdapter, NativeDateAdapter } from '@angular/material/core';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatDatepickerModule,
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideDatabase(() => getDatabase()),
-    provideStorage(() => getStorage()),
+
     ToastrModule.forRoot(),
   ],
-  providers: [{ provide: DateAdapter, useClass: NativeDateAdapter }],
+  providers: [
+    AuthService,
+    { provide: DateAdapter, useClass: NativeDateAdapter },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
 })
 export class AuthModule {}

@@ -1,11 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AddFolderDto, Folder } from '../../interfaces/folder';
-import { firestore } from '../../../../firebase.config';
-import { auth } from '../../../../firebase.config';
-import firebase from 'firebase/compat';
+import { AddFolderDto, Folder, FolderResponse } from '../../interfaces/folder';
+// import { firestore } from '../../../../firebase.config';
+// import { auth } from '../../../../firebase.config';
+// import firebase from 'firebase/compat';
 import { from, map, Observable } from 'rxjs';
-import { FirebaseService } from '../firebase/firebase.service';
+// import { FirebaseService } from '../firebase/firebase.service';
 import { Firestore } from '@angular/fire/firestore';
 import { AuthService } from '../../../modules/auth/services/auth/auth.service';
 import { ref } from '@angular/fire/database';
@@ -21,7 +21,7 @@ export class FolderService {
 
   constructor(
     private http: HttpClient,
-    private firebaseService: FirebaseService,
+    // private firebaseService: FirebaseService,
     private authService: AuthService
   ) {}
   private createAuthorizationHeader(): HttpHeaders {
@@ -35,31 +35,16 @@ export class FolderService {
 
   getFolders() {
     return this.http
-      .get<{ result: Folder[] }>(this.baseURL)
+      .get<{ result: Folder[] }>(`${this.baseURL}/user_Folders`)
       .pipe(map((res) => res.result));
   }
 
-  // user$ = this.authService.loggedinUser$.subscribe((dt) => {
-  //   const userUId = dt?.uid;
-  //   console.log(dt?.uid);
-  //   this.userId = userUId;
-  //   console.log(this.userId);
-  // });
+  getFolder(folderId: string) {
+    return this.http
+      .get<{ result: Folder }>(`${this.baseURL}/${folderId}`)
+      .pipe(map((res) => res.result));
+  }
 
-  // getFolders() {
-  //   if (!this.userId) {
-  //     return 'User not found';
-  //   }
-  //   return firestore
-  //     .collection('folders')
-  //     .where('userId', '==', this.userId)
-  //     .get()
-  //     .then((querySnapshot) => {
-  //       querySnapshot.forEach((doc) => {
-  //         console.log(doc.id, '==', doc.data());
-  //       });
-  //     });
-  // }
   addFolder(folder: AddFolderDto): Observable<Folder> {
     return this.http.post<Folder>(`${this.baseURL}`, folder, {
       headers: this.createAuthorizationHeader(),

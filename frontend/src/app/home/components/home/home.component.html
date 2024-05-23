@@ -43,21 +43,21 @@
         </div>
 
         <ng-container>
-          <div *ngIf="auth.currentUserSignal() === null">
-            <div class="cursor-pointer flex gap-2">
+          <div *ngIf="!isLoggedIn">
+            <div class="cursor-pointer flex gap-2" routerLink="/auth/login">
               <img
                 class="w-[30px] h-[30px] rounded-[50%] object-cover object-center"
                 src="assets/image/user.png"
                 alt=""
               />
-              <div>Username</div>
+              <!-- <div>Username</div> -->
 
-              <mat-icon class="mb-5">expand_more</mat-icon>
+              <!-- <mat-icon class="mb-5">expand_more</mat-icon> -->
             </div>
           </div>
 
-          <div *ngIf="auth.currentUserSignal()">
-            <span>Logout</span>
+          <div *ngIf="isLoggedIn">
+            <span (click)="logout()">Logout</span>
           </div>
           <!-- <span>{{ user.email }}</span> -->
         </ng-container>

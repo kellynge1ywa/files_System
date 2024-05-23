@@ -63,34 +63,34 @@ export class ProfileComponent implements OnInit {
   }
 
   uploadImage(event: any, user: ProfileUser) {
-    this.uploadProfileImageService
-      .uploadProfileImage(event.target.files[0], `images/profiles/${user.uid}`)
-      .pipe(
-        this.toastr.observe({
-          loading: 'Uploading image...',
-          success: 'Image uploaded!!!',
-          error: 'Image upload failed!!!',
-        }),
-        concatMap((photoURL) =>
-          this.userService.updateUser({ uid: user.uid, photoURL })
-        )
-      )
-      .subscribe();
+    // this.uploadProfileImageService
+    //   .uploadProfileImage(event.target.files[0], `images/profiles/${user.uid}`)
+    //   .pipe(
+    //     this.toastr.observe({
+    //       loading: 'Uploading image...',
+    //       success: 'Image uploaded!!!',
+    //       error: 'Image upload failed!!!',
+    //     }),
+    //     concatMap((photoURL) =>
+    //       this.userService.updateUser({ uid: user.uid, photoURL })
+    //     )
+    //   )
+    //   .subscribe();
   }
 
   SaveProfile() {
     const profileData = this.profileForm.value as ProfileUser;
 
-    this.userService
-      .updateUser(profileData)
-      .pipe(
-        this.toastr.observe({
-          loading: 'Saving profile...',
-          success: 'Added profile successfully!!!',
-          error: 'Failed!!!',
-        })
-      )
-      .subscribe();
+    // this.userService
+    //   .updateUser(profileData)
+    //   .pipe(
+    //     this.toastr.observe({
+    //       loading: 'Saving profile...',
+    //       success: 'Added profile successfully!!!',
+    //       error: 'Failed!!!',
+    //     })
+    //   )
+    //   .subscribe();
   }
 
   logout() {

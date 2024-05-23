@@ -2,6 +2,7 @@
 
 public interface IFolder
 {
+    Task<AppUserDto> GetUser(Guid userId);
     Task<string> AddFolder(Folder newFolder);
     Task<List<Folder>> GetFolders();
     Task<List<Folder>> GetUserFolders(Guid UserId);

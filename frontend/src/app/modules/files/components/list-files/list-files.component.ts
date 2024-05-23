@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ImageService } from '../../services/images/image.service';
+// import { ImageService } from '../../services/images/image.service';
 import { Observable } from 'rxjs';
 import { FilesService } from '../../services/files/files.service';
-import { FileDetails } from '../../interfaces/files';
+import { FileDetails, UploadFileDto } from '../../interfaces/files';
 import { Folder } from '../../../../home/interfaces/folder';
 import { AuthService } from '../../../auth/services/auth/auth.service';
 import { HotToastService } from '@ngneat/hot-toast';
@@ -21,6 +21,7 @@ import {
 } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { FolderService } from '../../../../home/services/folder/folder.service';
 
 @Component({
   selector: 'app-list-files',
@@ -44,13 +45,15 @@ export class ListFilesComponent implements OnInit {
 
   folderId!: string;
 
-  files!: FileDetails[];
+  // files!: FileDetails[];
 
   folder?: Folder;
 
+  folderService = inject(FolderService);
+
   selectedFile?: FileDetails;
 
-  file: FileDetails[] = [];
+  files: FileDetails[] = [];
 
   loggedInUserId?: string;
 
@@ -60,12 +63,14 @@ export class ListFilesComponent implements OnInit {
 
   errorMessage = '';
 
-  filename = new FormControl('', [Validators.required]);
-  filepath = new FormControl('', [Validators.required]);
+  fileUpload!: UploadFileDto;
+
+  newFile = new FormControl('', [Validators.required]);
+  // filepath = new FormControl('', [Validators.required]);
 
   addFileForm = new FormGroup({
-    filename: new FormControl('', Validators.required),
-    filepath: new FormControl('', Validators.required),
+    newFile: new FormControl('', Validators.required),
+    // filepath: new FormControl('', Validators.required),
   });
 
   constructor(
@@ -88,8 +93,12 @@ export class ListFilesComponent implements OnInit {
     console.log(folderId);
     this.folderId = folderId;
     console.log(this.folderId);
-    this.getAllFiles();
+    // this.getAllFiles();
     this.getFolder(folderId);
+
+    this.getFiles(this.folderId);
+
+    this.fileUpload = { file: null as unknown as File }; // Initialize properly
   }
 
   preview(file: FileDetails) {
@@ -99,48 +108,79 @@ export class ListFilesComponent implements OnInit {
     this.selectedFile = file;
   }
 
-  // getFiles(folderId: string) {
-  //   this.fileService.getAllFiles(folderId)
-  //     .subscribe((files) => (this.files = files));
-  // }
+  getFiles(folderId: string) {
+    this.fileService.getFolderFiles(folderId).subscribe((files) => {
+      files.map((file) => {
+        file.filePath = file.filePath.replace(/\\/g, '/');
+        file.filePath = file.filePath.replace(/ /g, '').toLowerCase();
+        // console.log(file.filePath.replace(' ', '_'));
+      });
+      this.files = files;
+    });
+  }
 
-  fileNameError() {
-    if (this.filename.hasError('required')) {
+  fileError() {
+    if (this.newFile.hasError('required')) {
       this.errorMessage = 'Enter  file name';
     } else {
       this.errorMessage = '';
     }
   }
 
-  filePathError() {
-    if (this.filepath.hasError('required')) {
-      this.errorMessage = 'Enter  file path';
-    } else {
-      this.errorMessage = '';
-    }
-  }
+  // filePathError() {
+  //   if (this.filepath.hasError('required')) {
+  //     this.errorMessage = 'Enter  file path';
+  //   } else {
+  //     this.errorMessage = '';
+  //   }
+  // }
 
+  uploadFile = (files: any) => {
+    if (files.length === 0) {
+      return;
+    }
+    this.fileUpload.file = <File>files[0];
+  };
   onSubmit() {
-    const newFile = this.addFileForm.value as FileDetails;
-    const { filename } = this.addFileForm.value;
-    if (this.addFileForm.valid) {
-      newFile.id = filename?.toLowerCase();
-      newFile.folderId = this.folderId;
-      console.log(newFile.folderId);
-      newFile.format = this.folder?.folderName.slice(0, -1);
-      newFile.userId = this.loggedInUserId;
-      this.fileService.addFile(this.folderId, newFile).then(() => {
-        this.showForm = false;
-      });
-    }
+    const formData: FormData = new FormData();
+    formData.append('file', this.fileUpload.file, this.fileUpload.file.name);
+    this.fileService
+      .addFile(this.folderId, formData)
+      .pipe(
+        this.toastr.observe({
+          success: 'File uploaded successfully!!!',
+          error: 'File upload failed, try again',
+          loading: 'Loading!!!',
+        })
+      )
+      .subscribe(() => {});
   }
 
-  getAllFiles() {
-    this.fileService.getAllFiles();
-  }
+  // uploadFile(event: any) {
+  //   this.fileUpload.file = event.target.files[0];
+  // }
+
+  // onSubmit() {
+  //   this.fileService
+  //     .addFile(this.folderId, this.fileUpload)
+  //     .pipe(
+  //       this.toastr.observe({
+  //         success: 'File uploaded successful!!!',
+  //         error: 'File upload failed, try again',
+  //         loading: 'Loading!!!',
+  //       })
+  //     )
+  //     .subscribe((file) => {
+  //       console.log(file);
+  //     });
+  // }
+
+  // getAllFiles() {
+  //   this.fileService.getAllFiles();
+  // }
 
   getFolder(folderId: string) {
-    this.fileService
+    this.folderService
       .getFolder(folderId)
       .subscribe((folder) => (this.folder = folder));
   }

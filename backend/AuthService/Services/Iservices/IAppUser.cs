@@ -9,7 +9,7 @@ namespace AuthService.Services.Iservices
 
         Task<List<AppUser>> GetUsers();
         Task<AppUser> GetOneUser(Guid UserId);
-        Task<AppUser> GetUser(Guid Id);
+        Task<AppUser> GetUser(Guid userId, string token);
         Task<LoginResponseDto> SignInUser(LoginRequestDto loginRequest);
     }
 }

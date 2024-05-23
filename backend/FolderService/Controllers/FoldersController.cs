@@ -14,13 +14,51 @@ public class FoldersController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IFolder _folderServices;
+    private readonly IAppUser _userServices;
     private readonly ResponseDto _response;
-    public FoldersController(IMapper mapper, IFolder folderServices)
+    public FoldersController(IMapper mapper, IFolder folderServices, IAppUser userServices)
     {
         _mapper = mapper;
         _folderServices = folderServices;
+        _userServices = userServices;
         _response = new ResponseDto();
     }
+
+    [HttpGet("loggedInUser")]
+    // [Authorize]
+    public async Task<ActionResult<ResponseDto>> GetUser()
+    {
+        try
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var userId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+            {
+                _response.Error = "Please log in";
+                return BadRequest(_response);
+            }
+
+            var UserId = Guid.Parse(userId);
+
+            var loggedUser = await _userServices.GetUser(UserId, token);
+            if (loggedUser == null)
+            {
+                _response.Error = "User is not logged in!!";
+                return BadRequest(_response);
+            }
+            _response.Result = loggedUser;
+            return Ok(_response);
+
+        }
+        catch (Exception ex)
+        {
+            _response.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            return StatusCode(500, _response);
+        }
+    }
+
+
+
     [HttpPost]
     [Authorize]
     public async Task<ActionResult<ResponseDto>> AddFolder(AddFolderDto newFolder)

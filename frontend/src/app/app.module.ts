@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -8,7 +8,7 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
-import { firebaseConfig } from '../firebase.config';
+// import { firebaseConfig } from '../firebase.config';
 import { AuthModule } from './modules/auth/auth.module';
 import { RouterModule } from '@angular/router';
 import { FilesModule } from './modules/files/files.module';
@@ -29,6 +29,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AuthInterceptor } from './modules/auth/interceptor/interceptor.interceptor';
+import { AuthService } from './modules/auth/services/auth/auth.service';
+import { FolderService } from './home/services/folder/folder.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -54,8 +56,18 @@ import { AuthInterceptor } from './modules/auth/interceptor/interceptor.intercep
     ToastrModule.forRoot(),
   ],
   providers: [
+    AuthService,
+    FolderService,
     provideAnimationsAsync(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: (auth: AuthService) => {
+    //     // auth.getLoggedInUser().subscribe(console.log);
+    //   },
+    //   multi: true,
+    //   deps: [AuthService],
+    // },
   ],
   bootstrap: [AppComponent],
 })

@@ -13,6 +13,8 @@ public class FileServices : IFiles
     private readonly IFolder _folderServices;
     private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly ResponseDto _response;
+    private bool fileinfo;
+
     public FileServices(AppDbContext dbContext, IHttpContextAccessor httpContextAccessor, IFolder folderServices, IWebHostEnvironment webHostEnvironment)
     {
         _dbContext = dbContext;
@@ -85,5 +87,15 @@ public class FileServices : IFiles
         // await uploadFile.File.CopyToAsync(new FileStream(filePath, FileMode.Create));
         // uploadFile.FilePath = filePath;
         return;
+    }
+
+    public async Task<List<FileDetails>> GetFolderFiles(Guid UserId, Guid FolderId)
+    {
+        return await _dbContext.Files.Where(fileinfo => fileinfo.UserId == UserId && fileinfo.FolderId == FolderId).ToListAsync();
+    }
+
+    public async Task<FileDetails> GetFileByName(string Filename)
+    {
+        return await _dbContext.Files.Where(file => file.FileName == Filename).FirstOrDefaultAsync();
     }
 }

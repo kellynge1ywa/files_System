@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FileService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240426083458_FileMigrations")]
-    partial class FileMigrations
+    [Migration("20240520153526_latest")]
+    partial class latest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,6 +44,10 @@ namespace FileService.Migrations
 
                     b.Property<Guid>("FolderId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Format")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");

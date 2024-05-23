@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FolderService.Migrations
 {
     /// <inheritdoc />
-    public partial class folderMigrations : Migration
+    public partial class newFolders : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -8,8 +8,9 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
 import { getStorage, provideStorage } from '@angular/fire/storage';
-import { firebaseConfig } from '../../../firebase.config';
-import { HttpClientModule } from '@angular/common/http';
+// import { firebaseConfig } from '../../../firebase.config';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthInterceptor } from '../auth/interceptor/interceptor.interceptor';
 
 @NgModule({
   declarations: [],
@@ -19,11 +20,14 @@ import { HttpClientModule } from '@angular/common/http';
     FilesRoutingModule,
     FontAwesomeModule,
     HttpClientModule,
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideDatabase(() => getDatabase()),
-    provideStorage(() => getStorage()),
+    // provideFirebaseApp(() => initializeApp(firebaseConfig)),
+    // provideAuth(() => getAuth()),
+    // provideFirestore(() => getFirestore()),
+    // provideDatabase(() => getDatabase()),
+    // provideStorage(() => getStorage()),
+  ],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
 })
 export class FilesModule {}

@@ -42,6 +42,37 @@ public class FilesController : ControllerBase
         }
     }
 
+    [HttpGet("folder_files/{folderId}")]
+    public async Task<ActionResult<ResponseDto>> GetFiles(Guid folderId)
+    {
+        try
+        {
+            var userId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                _response.Error = "Please log in";
+                return BadRequest(_response);
+            }
+
+            var UserId = Guid.Parse(userId);
+            var files = await _filesServices.GetFolderFiles(UserId, folderId);
+            if (files == null)
+            {
+                _response.Error = "Files not found";
+                return NotFound(_response);
+            }
+
+            _response.Result = files;
+            return Ok(_response);
+
+        }
+        catch (Exception ex)
+        {
+            _response.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+            return StatusCode(500, _response);
+        }
+    }
+
     [HttpGet("user_files")]
     public async Task<ActionResult<ResponseDto>> GetUserFiles()
     {
@@ -105,8 +136,12 @@ public class FilesController : ControllerBase
                 Directory.CreateDirectory(filePath);
             }
             var fileName = fileDto.File.FileName;
+            var format = Path.GetExtension(fileName);
             var fullPath = Path.Combine(filePath, fileName);
             var dbPath = Path.Combine(folderName, fileName);
+
+            var mimeType = GetMimeType(dbPath);
+            Console.WriteLine(mimeType);
             Console.WriteLine(fileName);
             Console.WriteLine(fullPath);
             Console.WriteLine(dbPath);
@@ -115,6 +150,8 @@ public class FilesController : ControllerBase
             {
                 Id = Guid.NewGuid(),
                 FilePath = dbPath,
+                FileName = fileName,
+                Format = mimeType,
                 FolderId = folderId,
                 UserId = Guid.Parse(userId),
                 DateAdded = DateTime.Now
@@ -173,6 +210,59 @@ public class FilesController : ControllerBase
             _response.Error = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
             return StatusCode(500, _response);
         }
+    }
+
+    [HttpGet("/{filename}")]
+    public async Task<ActionResult<ResponseDto>> GetFileByName(string filename)
+    {
+        var file = await _filesServices.GetFileByName(filename);
+        if (file == null)
+        {
+            _response.Error = "File not found";
+            return NotFound(_response);
+        }
+        // var filePath = Path.Combine("Resources", "Files", filename);
+        if (!System.IO.File.Exists(file.FilePath))
+        {
+            return NotFound(_response);
+        }
+
+        var mimeType = GetMimeType(file.FilePath);
+        Console.WriteLine(mimeType);
+        var fileStream = System.IO.File.OpenRead(file.FilePath);
+        Console.WriteLine(fileStream);
+
+        // return File(fileStream, mimeType);
+        // file.FilePath=File(fileStream,mimeType);
+        _response.Result = file;
+        return Ok(_response);
+    }
+
+    private string GetMimeType(string filePath)
+    {
+        // You can expand this dictionary to include more file types as needed
+        var mimeTypes = new Dictionary<string, string>
+        {
+            { ".txt", "text/plain" },
+            { ".pdf", "application/pdf" },
+            { ".doc", "application/msword" },
+            { ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document" },
+            { ".xls", "application/vnd.ms-excel" },
+            { ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
+            { ".png", "image/png" },
+            { ".jpg", "image/jpeg" },
+            { ".jpeg", "image/jpeg" },
+            { ".gif", "image/gif" },
+            { ".bmp", "image/bmp" },
+            { ".mp3", "audio/mpeg" },
+            { ".mp4", "video/mp4" },
+            { ".avi", "video/x-msvideo" },
+            { ".mov", "video/quicktime" }
+            // Add more MIME types if necessary
+        };
+
+        var extension = Path.GetExtension(filePath).ToLowerInvariant();
+        return mimeTypes.ContainsKey(extension) ? mimeTypes[extension] : "application/octet-stream";
     }
 
     // var newFile = _imapper.Map<FileDetails>(uploadFile);

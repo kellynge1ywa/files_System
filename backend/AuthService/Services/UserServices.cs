@@ -31,10 +31,16 @@ namespace AuthService.Services
         }
 
 
-        public async Task<AppUser> GetUser(Guid Id)
+        // public async Task<AppUser> GetUser(Guid Id)
+        // {
+        //     return await _appDbContext.AppUsers.Where(k => k.Id == Id.ToString()).FirstOrDefaultAsync();
+        // }
+
+        public async Task<AppUser> GetUser(Guid userId, string token)
         {
-            return await _appDbContext.AppUsers.Where(k => k.Id == Id.ToString()).FirstOrDefaultAsync();
+            return await _appDbContext.AppUsers.Where(k => k.Id == userId.ToString()).FirstOrDefaultAsync();
         }
+
 
         public async Task<List<AppUser>> GetUsers()
         {
@@ -70,23 +76,36 @@ namespace AuthService.Services
         public async Task<string> SignUpUser(RegisterUserDto NewUser)
         {
             var newUser = _mapper.Map<AppUser>(NewUser);
-            var isFirstUser = !_appDbContext.AppUsers.Any();
-            var result = await _userManager.CreateAsync(newUser, NewUser.Password);
-
-            if (result.Succeeded)
+            using (var transaction = await _appDbContext.Database.BeginTransactionAsync())
             {
+                var result = await _userManager.CreateAsync(newUser, NewUser.Password);
 
-                if (isFirstUser)
+                if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(newUser, "Admin");
+                    if (!_appDbContext.AppUsers.Any())
+                    {
+                        await _userManager.AddToRoleAsync(newUser, "Admin");
+                    }
+                    await _appDbContext.SaveChangesAsync();
+                    transaction.Commit();
+                    return "";
                 }
+                else
+                {
+                    transaction.Rollback();
+                    return result.Errors.FirstOrDefault()!.Description;
+                }
+            }
 
-                return "";
-            }
-            else
-            {
-                return result.Errors.FirstOrDefault()!.Description;
-            }
+            // {
+
+            //     if (isFirstUser)
+            //     {
+            //         await _userManager.AddToRoleAsync(newUser, "ADMIN");
+            //     }
+
+            //     return "";
+            // }
         }
     }
 }

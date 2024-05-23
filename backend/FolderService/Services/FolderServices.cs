@@ -46,6 +46,11 @@ public class FolderServices : IFolder
         return await _dbContext.Folders.ToListAsync();
     }
 
+    public Task<AppUserDto> GetUser(Guid userId)
+    {
+        throw new NotImplementedException();
+    }
+
     public async Task<List<Folder>> GetUserFolders(Guid UserId)
     {
         return await _dbContext.Folders.Where(k => k.UserId == UserId).ToListAsync();

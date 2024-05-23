@@ -1,10 +1,13 @@
 export interface FileDetails {
-  id?: string;
-  filename: string;
+  id: string;
   filePath: string;
-  format?: string;
-  userId?: string;
+  fileName: string;
+  format: string;
+  userId: string;
   folderId: string;
-  isDeleted?: boolean;
-  isStarred?: boolean;
+  dateAdded: string;
+}
+
+export interface UploadFileDto {
+  file: File;
 }

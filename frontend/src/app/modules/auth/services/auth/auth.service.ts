@@ -1,16 +1,6 @@
-import { Injectable, signal } from '@angular/core';
-import {
-  Auth,
-  authState,
-  createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  updateProfile,
-  UserCredential,
-  UserInfo,
-} from '@angular/fire/auth';
-import { Router } from '@angular/router';
-import { auth } from '../../../../../firebase.config';
+import { inject, Injectable, signal } from '@angular/core';
+
+// import { auth } from '../../../../../firebase.config';
 import 'firebase/auth';
 import firebase from 'firebase/app';
 import {
@@ -22,26 +12,37 @@ import {
   ResponseDto,
   UserResponseDto,
 } from '../../interface/user';
-import { concatMap, from, Observable, of, switchMap, tap } from 'rxjs';
+import {
+  BehaviorSubject,
+  concatMap,
+  from,
+  map,
+  Observable,
+  of,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { HotToastService } from '@ngneat/hot-toast';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private currentUser: ProfileUser | null;
+  // private currentUser: ProfileUser | null;
+  private jwtHelper = new JwtHelperService();
+
+  private isLoggedInSubject: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
+  isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   baseUrl = 'https://localhost:7282/api/Users';
 
-  constructor(
-    private router: Router,
-    private authy: Auth,
-    private http: HttpClient,
-    private toastr: ToastrService
-  ) {
-    this.currentUser = null;
+  constructor(private http: HttpClient, private toastr: ToastrService) {
+    // this.currentUser = null;
+    this.checkToken();
   }
 
   // loggedinUser$ = authState(this.authy);
@@ -63,25 +64,26 @@ export class AuthService {
       .post<{ result: UserResponseDto }>(`${this.baseUrl}/login`, data)
       .pipe(
         tap((result) => {
+          this.isLoggedInSubject.next(true);
           localStorage.setItem('token', result.result.token);
-          this.currentUserSignal.set(result.result);
+          // this.currentUserSignal.set(result.result);
+          // this.isLoggedInSubject.asObservable();
         })
       );
   }
 
   getLoggedInUser() {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    });
-
-    this.http
+    const token = localStorage.getItem('token') ?? '';
+    return this.http
       .get<{ result: UserResponseDto }>(
-        'https://localhost:7282/api/Users/loggedIn',
-        { headers }
+        'https://localhost:7161/api/Folders/loggedInUser',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
-      .subscribe((response) => {
-        console.log(response);
-      });
+      .pipe(map((res) => res.result.userDto));
   }
 
   // login(data: LoginCredentials) {
@@ -92,12 +94,35 @@ export class AuthService {
   //     });
   // }
 
-  isLoggedIn() {
-    return localStorage.getItem('user') !== null;
+  isLoggedIn(): Observable<boolean> {
+    // return localStorage.getItem('token') !== null;
+    return this.isLoggedInSubject.asObservable();
+  }
+  getIsLoggedIn() {
+    return this.isLoggedInSubject.value;
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
+  }
+
+  isAuthenticated() {
+    const token = localStorage.getItem('token');
+    return token !== null && !this.jwtHelper.isTokenExpired(token);
   }
 
   logout() {
-    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    this.isLoggedInSubject.next(false);
+  }
+
+  private checkToken(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // If token exists during app startup, clear it
+      localStorage.removeItem('token');
+      this.isLoggedInSubject.next(false);
+    }
   }
 
   //login

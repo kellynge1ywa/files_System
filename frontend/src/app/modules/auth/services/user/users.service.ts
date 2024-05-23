@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  doc,
-  docData,
-  Firestore,
-  setDoc,
-  updateDoc,
-} from '@angular/fire/firestore';
+
 import { ProfileUser } from '../../interface/user';
 import { from, Observable, of, retry, switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -26,15 +20,15 @@ export class UsersService {
   //   );
   // }
 
-  constructor(private firestore: Firestore, private authService: AuthService) {}
+  constructor(private authService: AuthService) {}
 
-  addUser(user: ProfileUser): Observable<any> {
-    const ref = doc(this.firestore, 'users', user.uid);
-    return from(setDoc(ref, user));
-  }
+  // addUser(user: ProfileUser): Observable<any> {
+  //   const ref = doc(this.firestore, 'users', user.uid);
+  //   return from(setDoc(ref, user));
+  // }
 
-  updateUser(user: ProfileUser): Observable<any> {
-    const ref = doc(this.firestore, 'users', user.uid);
-    return from(updateDoc(ref, { ...user }));
-  }
+  // updateUser(user: ProfileUser): Observable<any> {
+  //   const ref = doc(this.firestore, 'users', user.uid);
+  //   return from(updateDoc(ref, { ...user }));
+  // }
 }

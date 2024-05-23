@@ -40,21 +40,24 @@ namespace AuthService.Controllers
             }
         }
 
-        [HttpGet("loggedIn")]
+        [HttpGet("loggedInUser")]
         [Authorize]
         public async Task<ActionResult<ResponseDto>> GetUser()
         {
             try
             {
+                var Token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
                 var userId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
-                if (userId == null)
+                if (string.IsNullOrEmpty(userId))
                 {
                     _responseDto.Error = "Please log in";
                     return BadRequest(_responseDto);
                 }
 
                 var UserId = Guid.Parse(userId);
-                var loggedUser = await _userServices.GetUser(UserId);
+                // token = Token;
+
+                var loggedUser = await _userServices.GetUser(UserId, Token);
                 if (loggedUser == null)
                 {
                     _responseDto.Error = "User is not logged in!!";
@@ -72,7 +75,7 @@ namespace AuthService.Controllers
         }
 
 
-        [HttpGet("single/{UserId}")]
+        [HttpGet("{UserId}")]
         public async Task<ActionResult<ResponseDto>> GetOneUser(Guid UserId)
         {
             try
@@ -145,5 +148,11 @@ namespace AuthService.Controllers
 
         }
 
+
+
+
     }
+
 }
+
+

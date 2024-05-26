@@ -186,17 +186,6 @@ export class ListFilesComponent implements OnInit {
   }
 
   logout() {
-    // this.authService
-    //   .logout()
-    //   .pipe(
-    //     this.toastr.observe({
-    //       success: 'Logout successfully!!!, Goodbye ',
-    //       error: 'Logout failed!!!',
-    //       loading: 'Loading',
-    //     })
-    //   )
-    //   .subscribe(() => {
-    //     this.router.navigate(['/']);
-    //   });
+    this.authService.logout();
   }
 }

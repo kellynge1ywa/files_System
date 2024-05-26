@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     if (this.loginform.valid) {
-      console.log(this.loginform.value);
+      // console.log(this.loginform.value);
       this.authService
         .login(this.loginform.value)
         .pipe(
@@ -86,29 +86,29 @@ export class LoginComponent implements OnInit {
             error: 'Login failed!!!',
           })
         )
-        .subscribe(() => {
+        .subscribe((res) => {
+          this.authService.setUser(res.result.userDto);
           this.router.navigate(['/']);
         });
     }
   }
 
   // onSubmit() {
-  //   if (!this.loginform.valid) {
-  //     return;
+  //   if (this.loginform.valid) {
+  //     // console.log(this.loginform.value);
+  //     this.authService
+  //       .login(this.loginform.value)
+  //       .pipe(
+  //         this.toastr.observe({
+  //           success: 'You have logged in successfully',
+  //           loading: 'logging in...',
+  //           error: 'Login failed!!!',
+  //         })
+  //       )
+  //       .subscribe((res) => {
+  //         this.authService.setUser(res.result.userDto);
+  //         this.router.navigate(['/']);
+  //       });
   //   }
-  //   const { email, password } = this.loginform.value;
-  //   this.authService
-  //     .signIn(email, password)
-  //     .pipe(
-  //       this.toastr.observe({
-  //         success: 'You have logged in successfully!!!',
-  //         loading: 'logging in....',
-  //         error: 'Log in failed!!!',
-  //       })
-  //     )
-  //     .subscribe(() => {
-  //       this.router.navigate(['/']);
-  //       // console.log('Karibu!!');
-  //     });
   // }
 }

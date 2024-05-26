@@ -106,7 +106,7 @@ export class HomeComponent implements OnInit {
 
     this.authService.isLoggedIn().subscribe((loggedIn) => {
       this.isLoggedIn = loggedIn;
-      console.log(this.isLoggedIn);
+      // console.log(this.isLoggedIn);
     });
 
     //logged in user
@@ -127,7 +127,7 @@ export class HomeComponent implements OnInit {
   getFolders() {
     this.folderService.getFolders().subscribe((Folders) => {
       this.folders = Folders;
-      console.log(this.folders);
+      // console.log(this.folders);
     });
   }
 
@@ -148,7 +148,8 @@ export class HomeComponent implements OnInit {
           })
         )
         .subscribe((response) => {
-          console.log(response);
+          // console.log(response);
+          return response;
         });
     }
   }

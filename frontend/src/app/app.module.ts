@@ -31,6 +31,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AuthInterceptor } from './modules/auth/interceptor/interceptor.interceptor';
 import { AuthService } from './modules/auth/services/auth/auth.service';
 import { FolderService } from './home/services/folder/folder.service';
+import { catchError, EMPTY, of, pipe } from 'rxjs';
 
 @NgModule({
   declarations: [AppComponent],
@@ -56,18 +57,26 @@ import { FolderService } from './home/services/folder/folder.service';
     ToastrModule.forRoot(),
   ],
   providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: (auth: AuthService) => {
+        return () =>
+          new Promise((resolve, reject) => {
+            return auth
+              .getLoggedInUser()
+              .pipe(catchError(() => of(EMPTY)))
+              .subscribe((user) => {
+                resolve(user);
+              });
+          });
+      },
+      multi: true,
+      deps: [AuthService],
+    },
     AuthService,
     FolderService,
     provideAnimationsAsync(),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: (auth: AuthService) => {
-    //     // auth.getLoggedInUser().subscribe(console.log);
-    //   },
-    //   multi: true,
-    //   deps: [AuthService],
-    // },
   ],
   bootstrap: [AppComponent],
 })

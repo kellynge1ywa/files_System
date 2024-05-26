@@ -14,7 +14,9 @@ import {
 } from '../../interface/user';
 import {
   BehaviorSubject,
+  catchError,
   concatMap,
+  EMPTY,
   from,
   map,
   Observable,
@@ -26,6 +28,7 @@ import { HotToastService } from '@ngneat/hot-toast';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -33,16 +36,20 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 export class AuthService {
   // private currentUser: ProfileUser | null;
   private jwtHelper = new JwtHelperService();
+  router = inject(Router);
 
   private isLoggedInSubject: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);
+  public user$: BehaviorSubject<AppUser | undefined> = new BehaviorSubject<
+    AppUser | undefined
+  >(undefined);
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
   baseUrl = 'https://localhost:7282/api/Users';
 
   constructor(private http: HttpClient, private toastr: ToastrService) {
     // this.currentUser = null;
-    this.checkToken();
+    // this.checkToken();
   }
 
   // loggedinUser$ = authState(this.authy);
@@ -59,15 +66,19 @@ export class AuthService {
       );
   }
 
+  setUser(user?: AppUser) {
+    this.user$.next(user);
+    this.isLoggedInSubject.next(!!user);
+  }
+
   login(data: LoginCredentials) {
     return this.http
       .post<{ result: UserResponseDto }>(`${this.baseUrl}/login`, data)
       .pipe(
         tap((result) => {
-          this.isLoggedInSubject.next(true);
+          this.setUser(result.result.userDto);
           localStorage.setItem('token', result.result.token);
-          // this.currentUserSignal.set(result.result);
-          // this.isLoggedInSubject.asObservable();
+          // this.router.navigate(['/']);
         })
       );
   }
@@ -83,7 +94,12 @@ export class AuthService {
           },
         }
       )
-      .pipe(map((res) => res.result.userDto));
+      .pipe(
+        tap(console.log),
+        tap((res) => this.isLoggedInSubject.next(!!res?.result)),
+        map((res) => res.result),
+        catchError(() => of(EMPTY))
+      );
   }
 
   // login(data: LoginCredentials) {
@@ -113,7 +129,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('token');
-    this.isLoggedInSubject.next(false);
+    this.setUser(undefined);
   }
 
   private checkToken(): void {

@@ -17,7 +17,7 @@ export class FolderService {
   // private folderCollections:CollectionReference<Folder>;
 
   userId?: string;
-  baseURL = 'https://localhost:7161/api/Folders';
+  baseURL = 'http://localhost:7161/api/Folders';
 
   constructor(
     private http: HttpClient,

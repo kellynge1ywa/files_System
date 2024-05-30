@@ -16,7 +16,7 @@ import { map, Observable } from 'rxjs';
 export class FilesService {
   folderId!: string;
 
-  baseUrl = 'https://localhost:7162/api/Files';
+  baseUrl = 'http://localhost:7162/api/Files';
   http = inject(HttpClient);
 
   constructor(

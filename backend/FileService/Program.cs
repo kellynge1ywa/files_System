@@ -21,7 +21,7 @@ builder.Services.AddHttpClient("Folders", k => k.BaseAddress = new Uri(builder.C
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("myConnections"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("myConnections"));
 });
 
 builder.AddAuth();
@@ -48,19 +48,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+// app.UseStaticFiles(new StaticFileOptions()
+// {
+//     FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+//     RequestPath = new PathString("/Resources")
+// });
 
 
 app.UseHttpsRedirection();
 app.MapControllers();
-app.UseMigrations();
+// app.UseMigrations();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions()
-{
-    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-    RequestPath = new PathString("/Resources")
-});
+
 app.UseCors();
 app.Run();
 

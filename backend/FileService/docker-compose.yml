@@ -1,0 +1,54 @@
+version: '3.8'
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  fileapp:
+    container_name: fileapp
+    image: docker.io/library/fileapp
+    build: .
+    ports:
+    - "8080:80"
+    environment:
+      ConnectionStrings__myConnections: "Host=philefiles;Database=philefiles;Username=postgres;Password=kelly@postgres1"
+    depends_on:
+      - filedb  
+    networks:
+      - dev  
+ 
+  filedb:
+    container_name: filedb
+    image: postgres:latest
+    ports:
+      - "5434:5432"
+
+    restart: always  
+
+    environment:
+      POSTGRES_DB: philefiles
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kelly@postgres1
+    volumes:
+      - files:/var/lib/postgresql/data
+    networks:
+      - dev
+    
+   
+  filepgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: filepgadminpgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@kelly.com
+      PGADMIN_DEFAULT_PASSWORD: kelly
+    ports:
+    - "5052:80"
+    depends_on:
+      - filedb
+    networks:
+      - dev  
+    
+
+volumes:
+  files:   

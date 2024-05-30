@@ -45,7 +45,7 @@ export class AuthService {
   >(undefined);
   isLoggedIn$ = this.isLoggedInSubject.asObservable();
 
-  baseUrl = 'https://localhost:7282/api/Users';
+  baseUrl = 'http://localhost:7282/api/Users';
 
   constructor(private http: HttpClient, private toastr: ToastrService) {
     // this.currentUser = null;
@@ -87,7 +87,7 @@ export class AuthService {
     const token = localStorage.getItem('token') ?? '';
     return this.http
       .get<{ result: UserResponseDto }>(
-        'https://localhost:7161/api/Folders/loggedInUser',
+        'http://localhost:7161/api/Folders/loggedInUser',
         {
           headers: {
             Authorization: `Bearer ${token}`,

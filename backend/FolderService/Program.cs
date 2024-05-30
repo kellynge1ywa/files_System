@@ -19,7 +19,7 @@ builder.Services.AddHttpClient("User", UserClient => UserClient.BaseAddress = ne
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("myConnections"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("myConnections"));
 });
 
 // builder.Services.AddCors(options => options.AddPolicy("MyPolicy", builder =>

@@ -13,7 +13,7 @@ namespace AuthService.Models.Dtos
         [Required]
         public string Residence { get; set; } = "";
         [Required]
-        public string MobileNumber { get; set; } = "";
+        public string PhoneNumber { get; set; } = "";
         public DateTime DOB { get; set; }
 
 

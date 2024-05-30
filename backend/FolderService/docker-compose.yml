@@ -1,0 +1,54 @@
+version: '3.8'
+
+networks:
+   dev:
+    driver: bridge
+
+services:
+  folderapp:
+    container_name: folderapp
+    image: docker.io/library/folderapp
+    build: .
+    ports:
+    - "8080:80"
+    environment:
+      ConnectionStrings__myConnections: "Host=philefolders;Database=philefolders;Username=postgres;Password=kelly@postgres1"
+    depends_on:
+      - folderdb  
+    networks:
+      - dev  
+ 
+  folderdb:
+    container_name: folderdb
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+
+    restart: always  
+
+    environment:
+      POSTGRES_DB: philefolders
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kelly@postgres1
+    volumes:
+      - folders:/var/lib/postgresql/data
+    networks:
+      - dev
+    
+   
+  folderpgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: folderpgadminpgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@kelly.com
+      PGADMIN_DEFAULT_PASSWORD: kelly
+    ports:
+    - "5051:80"
+    depends_on:
+      - folderdb
+    networks:
+      - dev  
+    
+
+volumes:
+  folders:   

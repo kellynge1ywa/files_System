@@ -1,0 +1,51 @@
+version: '3.8'
+
+networks:
+  dev:
+    driver: bridge
+
+services:
+  authapp:
+    container_name: authapp
+    image: docker.io/library/authapp 
+    build: .
+    ports:
+    - "8081:8081"
+    environment:
+      ConnectionStrings__myConnections: "Host=phileusers;Database=phileusers;Username=postgres;Password=kelly@postgres1"
+    depends_on:
+      - userdb  
+    networks:
+      - dev  
+ 
+  userdb:
+    container_name: userdb
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+
+    restart: always  
+
+    environment:
+      POSTGRES_DB: phileusers
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kelly@postgres1
+    volumes:
+      - user_data:/var/lib/postgresql/data
+
+    
+   
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@kelly.com
+      PGADMIN_DEFAULT_PASSWORD: kelly
+    ports:
+    - "5050:80"
+    depends_on:
+      - userdb
+    
+
+volumes:
+  user_data:   

@@ -154,7 +154,7 @@ public class FilesController : ControllerBase
                 Format = mimeType,
                 FolderId = folderId,
                 UserId = Guid.Parse(userId),
-                DateAdded = DateTime.Now
+                DateAdded = DateTime.UtcNow
             };
 
 

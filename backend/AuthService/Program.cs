@@ -22,7 +22,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("myConnections"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("myConnections"));
 });
 
 builder.Services.AddScoped<IAppUser, UserServices>();

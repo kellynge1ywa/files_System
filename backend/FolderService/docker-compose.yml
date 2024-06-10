@@ -5,18 +5,18 @@ networks:
     driver: bridge
 
 services:
-  folderapp:
-    container_name: folderapp
-    image: docker.io/library/folderapp
-    build: .
-    ports:
-    - "8080:80"
-    environment:
-      ConnectionStrings__myConnections: "Host=philefolders;Database=philefolders;Username=postgres;Password=kelly@postgres1"
-    depends_on:
-      - folderdb  
-    networks:
-      - dev  
+  # folderapp:
+  #   container_name: folderapp
+  #   image: docker.io/library/folderapp
+  #   build: .
+  #   ports:
+  #   - "8080:80"
+  #   environment:
+  #     ConnectionStrings__myConnections: "Host=philefolders;Database=philefolders;Username=postgres;Password=kelly@postgres1"
+  #   depends_on:
+  #     - folderdb  
+  #   networks:
+  #     - dev  
  
   folderdb:
     container_name: folderdb

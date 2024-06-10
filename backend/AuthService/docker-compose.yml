@@ -5,18 +5,18 @@ networks:
     driver: bridge
 
 services:
-  authapp:
-    container_name: authapp
-    image: docker.io/library/authapp 
-    build: .
-    ports:
-    - "8081:8081"
-    environment:
-      ConnectionStrings__myConnections: "Host=phileusers;Database=phileusers;Username=postgres;Password=kelly@postgres1"
-    depends_on:
-      - userdb  
-    networks:
-      - dev  
+  # authapp:
+  #   container_name: authapp
+  #   image: docker.io/library/authapp 
+  #   build: .
+  #   ports:
+  #   - "8081:8081"
+  #   environment:
+  #     ConnectionStrings__myConnections: "Host=phileusers;Database=phileusers;Username=postgres;Password=kelly@postgres1"
+  #   depends_on:
+  #     - userdb  
+  #   networks:
+  #     - dev  
  
   userdb:
     container_name: userdb

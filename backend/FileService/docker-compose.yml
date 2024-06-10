@@ -5,18 +5,18 @@ networks:
     driver: bridge
 
 services:
-  fileapp:
-    container_name: fileapp
-    image: docker.io/library/fileapp
-    build: .
-    ports:
-    - "8080:80"
-    environment:
-      ConnectionStrings__myConnections: "Host=philefiles;Database=philefiles;Username=postgres;Password=kelly@postgres1"
-    depends_on:
-      - filedb  
-    networks:
-      - dev  
+  # fileapp:
+  #   # container_name: fileapp
+  #   # image: docker.io/library/fileapp
+  #   # build: .
+  #   # ports:
+  #   # - "8080:80"
+  #   # environment:
+  #   #   ConnectionStrings__myConnections: "Host=philefiles;Database=philefiles;Username=postgres;Password=kelly@postgres1"
+  #   # depends_on:
+  #   #   - filedb  
+  #   # networks:
+  #   #   - dev  
  
   filedb:
     container_name: filedb

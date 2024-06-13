@@ -54,7 +54,7 @@ services:
     container_name: folderdb
     image: postgres:latest
     ports:
-      - "5432:5432"
+      - "5435:5432"
 
     restart: always  
 

@@ -22,7 +22,7 @@ services:
     container_name: userdb
     image: postgres:latest
     ports:
-      - "5432:5432"
+      - "5433:5432"
 
     restart: always  
 
@@ -37,7 +37,7 @@ services:
    
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: pgadmin
+    container_name: upgadmin
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@kelly.com
       PGADMIN_DEFAULT_PASSWORD: kelly

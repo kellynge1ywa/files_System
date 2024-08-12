@@ -20,9 +20,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<A
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("myConnections"));
+builder.Services.AddDbContext<AppDbContext>(options => {
+    options.UseMySQL(builder.Configuration.GetConnectionString("myConnections"));
 });
 
 builder.Services.AddScoped<IAppUser, UserServices>();

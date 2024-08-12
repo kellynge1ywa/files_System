@@ -1,25 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "D:\\projects\\Fullstack\\philes\\backend\\AuthService\\AuthService.csproj": {}
+    "D:\\projects\\Fullstack\\phile\\backend\\AuthService\\AuthService.csproj": {}
   },
   "projects": {
-    "D:\\projects\\Fullstack\\philes\\backend\\AuthService\\AuthService.csproj": {
+    "D:\\projects\\Fullstack\\phile\\backend\\AuthService\\AuthService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\projects\\Fullstack\\philes\\backend\\AuthService\\AuthService.csproj",
+        "projectUniqueName": "D:\\projects\\Fullstack\\phile\\backend\\AuthService\\AuthService.csproj",
         "projectName": "AuthService",
-        "projectPath": "D:\\projects\\Fullstack\\philes\\backend\\AuthService\\AuthService.csproj",
+        "projectPath": "D:\\projects\\Fullstack\\phile\\backend\\AuthService\\AuthService.csproj",
         "packagesPath": "C:\\Users\\ngeiy\\.nuget\\packages\\",
-        "outputPath": "D:\\projects\\Fullstack\\philes\\backend\\AuthService\\obj\\",
+        "outputPath": "D:\\projects\\Fullstack\\phile\\backend\\AuthService\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\ngeiy\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\ngeiy\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -73,23 +80,31 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.4, )"
+              "version": "[8.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.4, )"
+              "version": "[8.0.7, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[8.0.4, )"
+              "version": "[8.0.7, )"
             },
-            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+            "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
-              "version": "[8.0.4, )"
+              "version": "[8.0.0, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "MySql.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.5, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -115,7 +130,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

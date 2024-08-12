@@ -18,9 +18,10 @@ builder.Services.AddScoped<IUser, UserServices>();
 
 builder.Services.AddHttpClient("User", UserClient => UserClient.BaseAddress = new Uri(builder.Configuration.GetValue<string>("ServiceURL:UserBaseURL")));
 
+var connectionString=builder.Configuration.GetConnectionString("myConnections");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("myConnections"));
+    options.UseMySQL(connectionString);
 });
 
 builder.Services.AddCors(options =>
